@@ -5,6 +5,7 @@
 
 body, html {
     margin: 0px;
+    font-family: calculatorFont;
 }
 
 .title {
@@ -41,7 +42,11 @@ body, html {
 .inner-display {
     font-size: 35px;
     margin-right: .5em;
+    margin-left: .5em;
+    min-height: 50px;
+    max-width: 370px;
     font-family: calculatorFont;
+    word-wrap: break-word;
 }
 
 .calc-button {
