@@ -1,11 +1,19 @@
-const calcButtons = Array.from(document.querySelectorAll(".calc-button"));
-const calcDisplay = document.querySelector(".inner-display")
+const calcNumbers = Array.from(document.querySelectorAll(".number"));
+const calcDisplay = document.querySelector(".inner-display");
+const clearBtn = document.querySelector(".clear");
+const deleteBtn = document.querySelector(".delete");
+const decimalBtn = document.querySelector(".decimal");
+const equalBtn = document.querySelector(".equals");
+const addBtn = document.querySelector(".add");
+const divideBtn = document.querySelector(".divide");
+const multiplyBtn = document.querySelector(".multiply");
+const subtractBtn = document.querySelector(".subtract");
 
 
-let memoryPositionOne = '';
-let memoryPositionTwo = '';
-const decimalCount = 0;
-let currentOperator = "";
+let valueOne = undefined;
+let valueTwo = undefined;
+let operatorJustClicked = false; //Tracks last click of operator keys +-*/
+
 
 function add(a, b) {
     return Number(a) + Number(b);
@@ -28,122 +36,141 @@ function divide(a, b) {
     return (Number(divided.toFixed(4)));
 }
 
-
-function sqrt(a, b) {
-
-}
-
-function modulus(a, b) {
-
-}
-
-function equals(a, b) {
-    console.log(a + " + " + b)
-    if (a == "" || b == "") return;
-    
-    switch(currentOperator) {
-        case '%':
-            console.log("Modulus");
-            break;
-        case '√':
-            console.log("sqrt")
-            break;
-        case '*':
-            console.log("multiplied");
-            break;
-        case "/":
-            console.log("Divided");
-            break;
-        case "-":
-            console.log("Subtracted");
-            break;
-        case ".":
-            console.log("decimal Added");
-            break;
-        case "+":
-            console.log("We made it here")
-            calcDisplay.innerText = (add(a,b).toString());
-            memoryPositionOne = calcDisplay.innerText;
-            memoryPositionTwo = "";
-    }
-
-}
-
-function operatorAction(string) {
-    switch (string) {
-        case 'DELETE':
-            console.log("Deleted");
-            break;
-        case 'CLEAR':
-            console.log("Cleared");
-            break;
-        case '%':
-            console.log("Modulus");
-            break;
-        case '√':
-            console.log("sqrt")
-            break;
-        case '*':
-            console.log("multiplied");
-            break;
-        case "/":
-            console.log("Divided");
-            break;
-        case "-":
-            console.log("Subtracted");
-            break;
-        case ".":
-            console.log("decimal Added");
-            break;
-        case "=":
-            console.log("Equals was accessed")
-            memoryPositionTwo = calcDisplay.innerText;
-            clear();
-            equals(memoryPositionOne, memoryPositionTwo)
-            break;
-        case "+":
-            memoryPositionOne = calcDisplay.innerText;
-            currentOperator = string;
-            clear();
-            break;
-    }
-    
-    
-}
-
-function appendToDisplay(string) {
-    if (memoryPositionOne.toString().length >= 15) return; //Limits screen output to 15.
-    if (isNaN(string)) { // Checks to verify the nubmer is a number- if not it is an operator. 
-        console.log(string + " is not a number.")
-        operatorAction(string)
-        return;
-    }
-
-    calcDisplay.innerText = calcDisplay.innerText + string // Append to display
-    memoryPositionOne = Number(calcDisplay.innerText); // Modify global variable
-}
-
-
-calcButtons.forEach(element => {
+calcNumbers.forEach(element => { //Add event listeners to each number & append it to display
     element.addEventListener('click', function () {
         appendToDisplay(this.innerText);
+        console.log(displayValue);
     })
 })
 
-
-function clear(){
-    calcDisplay.innerText= '';
+function appendToDisplay(string) {
+    if (operatorJustClicked == true) { //will clear display on number click if last press was a operator.
+        calcDisplay.innerText = "";
+        operatorJustClicked = false;
+    }
+    calcDisplay.innerText = calcDisplay.innerText + string // Append to display
+    displayValue = calcDisplay.innerText;
 }
 
+clearBtn.addEventListener('click', function () {
+    //Set everything to default, clear display
+    clear();
+})
 
+deleteBtn.addEventListener('click', function () {
+    console.log("Delete was clicked")
+})
 
-/*
-What needs to happen:
-1. Click Buttons
-2. if an operator is clicked clear the display and save the previous entry.
-3. if clear is clicked clear.
-4. if delete is clicked- remove last entry unless there are no entries.
+decimalBtn.addEventListener('click', function () {
+    console.log("Decimal was clicked")
+})
 
+equalBtn.addEventListener('click', function () {
+    //Take current display number and add to previous sum = display to output. 
+    console.log("equal was clicked")
+})
 
-SO MANY BUGS
-*/
+addBtn.addEventListener('click', function () {
+    operate("add");
+})
+
+divideBtn.addEventListener('click', function () {
+    operate("divide");
+})
+
+multiplyBtn.addEventListener('click', function () {
+    operate("multiply");
+})
+
+subtractBtn.addEventListener('click', function () {
+    operate("subtract");
+})
+
+function clear() {
+    calcDisplay.innerText = "";
+    valueOne = undefined;
+    valueTwo = undefined;
+    operatorJustClicked = false;
+}
+
+function operate(operator) {
+    switch (operator) {
+        case "add":
+            console.log("Add was clicked")
+            if (calcDisplay.innerText === "") return; // do nothing if input is blank
+        
+            if (valueOne === undefined) { //if the first value is undefined and not blank - set it to current.
+                valueOne = calcDisplay.innerText;
+            } else if (valueOne != undefined) { //if the valueOne is not undefined then this must be the second value.
+                valueTwo = calcDisplay.innerText;
+                let tempTotal = (add(valueOne, valueTwo)).toString();
+                calcDisplay.innerText = tempTotal;
+                valueOne = tempTotal;
+                valueTwo = undefined;
+                
+            }
+            operatorJustClicked = true;
+            break;
+        
+        case "subtract":
+            console.log("Add was clicked")
+            if (calcDisplay.innerText === "") return; // do nothing if input is blank
+    
+            if (valueOne === undefined) { //if the first value is undefined and not blank - set it to current.
+                valueOne = calcDisplay.innerText;
+            } else if (valueOne != undefined) { //if the valueOne is not undefined then this must be the second value.
+                valueTwo = calcDisplay.innerText;
+                let tempTotal = (subtract(valueOne, valueTwo)).toString();
+                calcDisplay.innerText = tempTotal;
+                valueOne = tempTotal;
+                valueTwo = undefined;
+                
+            }
+            operatorJustClicked = true;
+            break;
+
+        case "divide":
+            console.log("Add was clicked")
+            if (calcDisplay.innerText === "") return; // do nothing if input is blank
+        
+            if (valueOne === undefined) { //if the first value is undefined and not blank - set it to current.
+                valueOne = calcDisplay.innerText;
+            } else if (valueOne != undefined) { //if the valueOne is not undefined then this must be the second value.
+                valueTwo = calcDisplay.innerText;
+                let tempTotal = (divide(valueOne, valueTwo)).toString();
+                calcDisplay.innerText = tempTotal;
+                valueOne = tempTotal;
+                valueTwo = undefined;
+                
+            }
+            operatorJustClicked = true;
+            break;
+
+        case "multiply":
+            console.log("Add was clicked")
+            if (calcDisplay.innerText === "") return; // do nothing if input is blank
+        
+            if (valueOne === undefined) { //if the first value is undefined and not blank - set it to current.
+                valueOne = calcDisplay.innerText;
+            } else if (valueOne != undefined) { //if the valueOne is not undefined then this must be the second value.
+                valueTwo = calcDisplay.innerText;
+                let tempTotal = (multiply(valueOne, valueTwo)).toString();
+                calcDisplay.innerText = tempTotal;
+                valueOne = tempTotal;
+                valueTwo = undefined;
+                
+            }
+            operatorJustClicked = true;
+            break;
+    }
+}
+
+/* Works kind of?
+Need to fix issue where the operation happens on the second operator click. For example:
+4 + 6 - evalutes to 4 - 6.
+Same operator works fine due to that logic. 
+4 + 6 + 6 + etc etc always works. 
+
+Possible solution would be to check if both values exists and do the current operator - track current operator. 
+
+*/ 
