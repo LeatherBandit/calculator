@@ -14,6 +14,7 @@ calcButton.map(button => {
                 break;
             case "=":
                 operate()
+                break;
             default:
                 calcDisplay.innerText += e.target.innerText;
 
@@ -25,8 +26,62 @@ calcButton.map(button => {
 function operate() {
     let toBeCalculated = calcDisplay.innerText;
     let arrayofNumbers = toBeCalculated.split(/[\/\*\+\-]/);
-    let arrayofOperators = toBeCalculated.split("").forEach(e => {
-        // if operator is a symbol like +-.* add to new array. Will probably need map for this instead.
+    let arrayofOperators = toBeCalculated.split("").filter(character => {
+        if (/[\/\*\+\-]/.test(character)) {
+            return character
+        }
     })
-    arrayofString.forEach(e => console.log(e));
+
+    let runningTotal = 0;
+
+    for (i = 0; i < arrayofOperators.length; i++) {
+
+        switch (arrayofOperators[i]) {
+            case "*":
+                if (i == 0) {
+                    runningTotal = arrayofNumbers[i] * arrayofNumbers[i + 1]
+                    break;
+                } else {
+                    runningTotal = runningTotal * arrayofNumbers[i + 1];
+                    break;
+                }
+
+            case "+":
+                if (i == 0) {
+                    runningTotal = Number(arrayofNumbers[i]) + Number(arrayofNumbers[i + 1])
+                    break;
+                } else {
+                    runningTotal = Number(runningTotal) + Number(arrayofNumbers[i + 1]);
+                    break;
+                }
+            case "/":
+                if (i == 0) {
+                    runningTotal = (Number(arrayofNumbers[i]) / Number(arrayofNumbers[i + 1]));
+                    if (runningTotal % 1 !== 0) {
+                        runningTotal.toFixed(2);
+                    }
+                    break;
+                } else {
+                    runningTotal = (Number(runningTotal) / Number(arrayofNumbers[i + 1]));
+                    break;
+                }
+            case "-":
+                if (i == 0) {
+                    runningTotal = Number(arrayofNumbers[i]) - Number(arrayofNumbers[i + 1])
+                    break;
+                } else {
+                    runningTotal = Number(runningTotal) - Number(arrayofNumbers[i + 1]);
+                    break;
+                }
+
+            default:
+                console.log("Failed no case match");
+        }
+    }
+
+    if (runningTotal % 1 !== 0) {
+        calcDisplay.innerText = runningTotal.toFixed(2);
+    } else {
+        calcDisplay.innerText = runningTotal;
+    }
 }
