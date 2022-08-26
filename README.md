@@ -1,2 +1,2 @@
 # calculator
-Calculator Project
+Calculator Project [Live Project!](https://leatherbandit.github.io/calculator/)
